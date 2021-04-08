@@ -1,7 +1,33 @@
+##
+<#
+.SYNOPSIS
+    Example script that deploys vSphere with Tanzu Workload Management on clusters using VDS networking
+.DESCRIPTION
+    Introduced in vSphere 7 Update 1, vSphere with Tanzu uses virtual distributed switches
+    and an HAProxy VM to provide network isolation and load balancing for Kubernetes workloads.
+    This script deploys the Workload Management component.
+.EXAMPLE
+
+.INPUTS
+    vCenter FQDN/IP
+.OUTPUTS
+    Output (if any)
+.NOTES
+
+
+#>
 #Connect to vCenter. Edit values as appropriate.
-$vc = "192.168.111.109"
-$vc_user = "administrator@vsphere.local"
-$vc_password = "VMware1!"
+Param(
+    [Parameter(Position=1)]
+    [string]$vc = "192.168.111.109",
+
+    [Parameter(Position=2)]
+    [string]$vc_user = "administrator@vsphere.local",
+
+    [Parameter(Position=3)]
+    [string]$vc_password = "VMware1!"
+    )
+
 Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
 $Cluster = Get-Cluster  -Name "cluster"
 $datacenter = Get-Datacenter "datacenter"
