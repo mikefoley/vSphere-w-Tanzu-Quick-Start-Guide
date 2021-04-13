@@ -29,11 +29,12 @@ Param(
     )
 
 
-if ($global:DefaultVIServers) {
-    Disconnect-VIServer -Server $global:DefaultVIServers -Force -confirm:$false
-    } else {
+# if ($global:DefaultVIServers) {
+#     Disconnect-VIServer -Server $global:DefaultVIServers -Force -confirm:$false
+#     Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
+#     } else {
         Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
-    }
+#    }
 
 $Cluster = Get-Cluster  -Name "cluster"
 $datacenter = Get-Datacenter "datacenter"
