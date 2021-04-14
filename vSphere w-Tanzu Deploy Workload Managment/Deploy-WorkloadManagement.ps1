@@ -63,6 +63,7 @@ Get-Cluster $Cluster | Enable-WMCluster `
        -EphemeralStoragePolicy "kubernetes-demo-storage" `
        -ImageStoragePolicy "kubernetes-demo-storage" `
        -MasterStoragePolicy "kubernetes-demo-storage" `
+       -MasterDnsSearchDomain "nimbus-tb.eng.vmware.com"
        -ContentLibrary $tkgcl `
        -HAProxyName $HAProxyVMname `
        -HAProxyAddressRanges "192.168.24.208-192.168.24.222" `
