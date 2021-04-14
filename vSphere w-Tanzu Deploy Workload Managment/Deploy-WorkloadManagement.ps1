@@ -19,7 +19,7 @@
 #Connect to vCenter. Edit values as appropriate.
 Param(
     [Parameter(Position=1)]
-    [string]$vc = "192.168.111.109",
+    [string]$vc = "192.168.111.117",
 
     [Parameter(Position=2)]
     [string]$vc_user = "administrator@vsphere.local",
@@ -28,7 +28,14 @@ Param(
     [string]$vc_password = "VMware1!"
     )
 
-Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
+
+# if ($global:DefaultVIServers) {
+#     Disconnect-VIServer -Server $global:DefaultVIServers -Force -confirm:$false
+#     Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
+#     } else {
+        Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
+#    }
+
 $Cluster = Get-Cluster  -Name "cluster"
 $datacenter = Get-Datacenter "datacenter"
 $datastore = Get-Datastore -Name  "vsanDatastore"
