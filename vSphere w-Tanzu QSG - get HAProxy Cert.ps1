@@ -15,9 +15,9 @@
 
 #>
 # Change the value of $vc, $vc_user, $vc_password and $VMname to match yours.
-$vc = "10.174.71.163"
+$vc = "192.168.111.117"
 $vc_user = "administrator@vsphere.local"
-$vc_password = "Admin!23"
+$vc_password = "VMware1!"
 Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
 $VMname = "haproxy-demo"
 $AdvancedSettingName = "guestinfo.dataplaneapi.cacert"
