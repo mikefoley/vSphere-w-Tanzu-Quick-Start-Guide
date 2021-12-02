@@ -87,16 +87,18 @@ $vc_password = "Admin!23"
 Connect-VIServer -User $vc_user -Password $vc_password -Server $vc
 $Cluster = Get-Cluster  -Name "vSAN-Cluster"
 $datastore = Get-Datastore -Name  "vsanDatastore"
+$datacenter = get-datacenter datacenter
 $vmhosts = Get-VMHost
 $tkgcl = "tkg-cl"
 $ntpservers = @("time.vmware.com")
+
 
 
 #Set up the content library needed by vSphere with Tanzu
 New-ContentLibrary -Datastore $datastore -name $tkgcl -AutomaticSync -SubscriptionUrl "http://wp-content.vmware.com/v2/latest/lib.json" -Confirm:$false
 
 $workloadhosts = get-cluster $Cluster | get-vmhost
-New-VDSwitch -Name "Dswitch" -MTU 1500 -NumUplinkPorts 1 -location vSAN-DC
+New-VDSwitch -Name "Dswitch" -MTU 1600 -NumUplinkPorts 1 -location $datacenter
 Get-VDSwitch "Dswitch" | Add-VDSwitchVMHost -VMHost $workloadhosts
 Get-VDSwitch "Dswitch" | Add-VDSwitchPhysicalNetworkAdapter -VMHostNetworkAdapter ($workloadhosts | Get-VMHostNetworkAdapter -Name vmnic2) -Confirm:$false
 New-VDPortgroup -Name "Workload Network" -VDSwitch "Dswitch"
@@ -209,35 +211,35 @@ Write-Host $TextOut
 Write-Host "The file 'configuration.txt' has been written to disk"
 #
 #
-$vSphereWithTanzuParams = @{
-    ClusterName = $Cluster;
-    TanzuvCenterServer = $vc;
-    TanzuvCenterServerUsername = $vc_user;
-    TanzuvCenterServerPassword = $vc_password;
-    TanzuContentLibrary = $tkgcl;
-    ControlPlaneSize = "TINY";
-    MgmtNetworkStartIP = $Dataplane_ip;
-    MgmtNetworkSubnet = $MgmtNetworkCIDR.Subnetmask;
-    MgmtNetworkGateway = $ovfConfig.network.management_gateway.Value;
-    MgmtNetworkDNS = @($ovfConfig.network.nameservers.Value);
-    MgmtNetworkDNSDomain = "";
-    MgmtNetworkNTP = $ntpservers;
-    WorkloadNetworkStartIP = "172.17.36.130";
-    WorkloadNetworkIPCount = 20;
-    WorkloadNetworkSubnet = $WMNetworkCIDR.prefix;
-    WorkloadNetworkGateway = $ovfConfig.network.workload_gateway.Value;
-    WorkloadNetworkDNS = @($ovfConfig.network.nameservers.Value);
-    WorkloadNetworkServiceCIDR = "10.96.0.0/24";
-    StoragePolicyName = $StoragePolicyName;
-    HAProxyVMvCenterServer = $vc;
-    HAProxyVMvCenterUsername = $vc_user;
-    HAProxyVMvCenterPassword = $vc_password;
-    HAProxyVMName = $ovfConfig.network.hostname.Value;
-    HAProxyIPAddress = "172.17.31.116";
-    HAProxyRootPassword = $ovfConfig.loadbalance.haproxy_pwd.Value;
-    HAProxyUsername = $ovfConfig.loadbalance.haproxy_user.Value;
-    HAProxyPassword = $ovfConfig.loadbalance.haproxy_pwd.Value;
-    LoadBalancerStartIP = "172.17.36.2";
-    LoadBalancerIPCount = 125
-}
-New-WorkloadManagement2 @vSphereWithTanzuParams
+# $vSphereWithTanzuParams = @{
+#     ClusterName = $Cluster;
+#     TanzuvCenterServer = $vc;
+#     TanzuvCenterServerUsername = $vc_user;
+#     TanzuvCenterServerPassword = $vc_password;
+#     TanzuContentLibrary = $tkgcl;
+#     ControlPlaneSize = "TINY";
+#     MgmtNetworkStartIP = $Dataplane_ip;
+#     MgmtNetworkSubnet = $MgmtNetworkCIDR.Subnetmask;
+#     MgmtNetworkGateway = $ovfConfig.network.management_gateway.Value;
+#     MgmtNetworkDNS = @($ovfConfig.network.nameservers.Value);
+#     MgmtNetworkDNSDomain = "";
+#     MgmtNetworkNTP = $ntpservers;
+#     WorkloadNetworkStartIP = "172.17.36.130";
+#     WorkloadNetworkIPCount = 20;
+#     WorkloadNetworkSubnet = $WMNetworkCIDR.prefix;
+#     WorkloadNetworkGateway = $ovfConfig.network.workload_gateway.Value;
+#     WorkloadNetworkDNS = @($ovfConfig.network.nameservers.Value);
+#     WorkloadNetworkServiceCIDR = "10.96.0.0/24";
+#     StoragePolicyName = $StoragePolicyName;
+#     HAProxyVMvCenterServer = $vc;
+#     HAProxyVMvCenterUsername = $vc_user;
+#     HAProxyVMvCenterPassword = $vc_password;
+#     HAProxyVMName = $ovfConfig.network.hostname.Value;
+#     HAProxyIPAddress = "172.17.31.116";
+#     HAProxyRootPassword = $ovfConfig.loadbalance.haproxy_pwd.Value;
+#     HAProxyUsername = $ovfConfig.loadbalance.haproxy_user.Value;
+#     HAProxyPassword = $ovfConfig.loadbalance.haproxy_pwd.Value;
+#     LoadBalancerStartIP = "172.17.36.2";
+#     LoadBalancerIPCount = 125
+# }
+# New-WorkloadManagement2 @vSphereWithTanzuParams
